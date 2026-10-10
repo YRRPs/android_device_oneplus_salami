@@ -75,3 +75,6 @@ $(call inherit-product, device/oneplus/sm8550-common/common.mk)
 
 # Inherit from the proprietary files makefile.
 $(call inherit-product, vendor/oneplus/salami/salami-vendor.mk)
+
+# OPlus camera (salami only). Sets TARGET_USES_OPLUS_CAMERA.
+$(call inherit-product-if-exists, vendor/oplus/camera-salami/opluscamera.mk)
