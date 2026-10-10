@@ -57,15 +57,32 @@ blob_fixups: blob_fixups_user_type = {
         'odm/lib64/libyuv2.so'
     ): blob_fixup()
         .replace_needed('libstdc++.so', 'libstdc++_vendor.so'),
-    (
-        'odm/lib64/libHIS.so',
-        'odm/lib64/libOGLManager.so'
-    ): blob_fixup()
+    'odm/lib64/libOGLManager.so': blob_fixup()
         .clear_symbol_version('AHardwareBuffer_allocate')
         .clear_symbol_version('AHardwareBuffer_describe')
         .clear_symbol_version('AHardwareBuffer_lock')
         .clear_symbol_version('AHardwareBuffer_release')
         .clear_symbol_version('AHardwareBuffer_unlock'),
+    # The odm camera libs were built against ColorOS's smaller GraphicBuffer.
+    # Ship stock odm libui as libui_oplus.so and point its consumers at it, or
+    # ~GraphicBuffer() overruns and the camera provider crashes on teardown.
+    'odm/lib64/libHIS.so': blob_fixup()
+        .clear_symbol_version('AHardwareBuffer_allocate')
+        .clear_symbol_version('AHardwareBuffer_describe')
+        .clear_symbol_version('AHardwareBuffer_lock')
+        .clear_symbol_version('AHardwareBuffer_release')
+        .clear_symbol_version('AHardwareBuffer_unlock')
+        .replace_needed('libui.so', 'libui_oplus.so'),
+    (
+        'odm/lib64/libsharebuffer_impl.so',
+        'odm/lib64/libEIS.so',
+        'odm/lib64/hw/camera.oemlayer.so',
+        'odm/lib64/camera/components/com.oplus.node.sstabphoto.so',
+    ): blob_fixup()
+        .replace_needed('libui.so', 'libui_oplus.so'),
+    'odm/lib64/libui_oplus.so': blob_fixup()
+        .fix_soname()
+        .replace_needed('android.hardware.graphics.allocator-V1-ndk.so', 'android.hardware.graphics.allocator-V2-ndk.so'),
     'odm/lib64/libarcsoft_high_dynamic_range_v4.so': blob_fixup()
         .clear_symbol_version('remote_handle_close')
         .clear_symbol_version('remote_handle_invoke')

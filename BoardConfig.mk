@@ -28,5 +28,9 @@ TARGET_VENDOR_PROP += $(DEVICE_PATH)/properties/vendor.prop
 # Recovery
 TARGET_RECOVERY_UI_MARGIN_HEIGHT := 103
 
+# The OPlus camera labels ro.oplus.* props under vendor_camera_prop in vendor
+# property_contexts, which trips the vendor property namespace check.
+BUILD_BROKEN_VENDOR_PROPERTY_NAMESPACE := true
+
 # Include the proprietary files BoardConfig.
 include vendor/oneplus/salami/BoardConfigVendor.mk
